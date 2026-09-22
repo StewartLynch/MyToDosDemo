@@ -16,14 +16,30 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var store = ToDoStore()
+    @State private var newToDoTitle = ""
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack(spacing: 0) {
+                AddToDoView(title: $newToDoTitle, onAdd: addToDo)
+                ToDoListView(
+                    items: store.items,
+                    onToggle: store.toggleCompletion,
+                    onDelete: store.delete
+                )
+            }
+            .navigationTitle("ToDos")
         }
-        .padding()
+    }
+    
+    private func addToDo() {
+        guard !newToDoTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
+        
+        store.add(title: newToDoTitle)
+        newToDoTitle = ""
     }
 }
 
